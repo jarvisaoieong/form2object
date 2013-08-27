@@ -51,11 +51,13 @@
 	 * @param nodeCallback {Function} custom function to get node value
 	 * @param useIdIfEmptyName {Boolean} if true value of id attribute of field will be used if name of field is empty
 	 */
-	function form2js(rootNode, delimiter, skipEmpty, nodeCallback, useIdIfEmptyName)
+	function form2js(rootNode, options)
 	{
-		if (typeof skipEmpty == 'undefined' || skipEmpty == null) skipEmpty = true;
-		if (typeof delimiter == 'undefined' || delimiter == null) delimiter = '.';
-		if (arguments.length < 5) useIdIfEmptyName = false;
+		options = options || {};
+		var delimiter = options.delimiter || '.';
+		var skipEmpty = options.skipEmpty || false;
+		var nodeCallback = options.nodeCallback;
+		var useIdIfEmptyName = options.useIdIfEmptyName || false;
 
 		rootNode = typeof rootNode == 'string' ? document.getElementById(rootNode) : rootNode;
 
@@ -159,7 +161,7 @@
 					arrNameFull += arrName;
 
 					if (!currResult[arrName]) currResult[arrName] = [];
-					currResult[arrName].push(value);
+					if (value) currResult[arrName].push(value);
 				}
 				else if (namePart.indexOf('[') > -1)
 				{
@@ -225,13 +227,13 @@
 		return result;
 	}
 
-    function getFormValues(rootNode, nodeCallback, useIdIfEmptyName)
-    {
-        var result = extractNodeValues(rootNode, nodeCallback, useIdIfEmptyName);
-        return result.length > 0 ? result : getSubFormValues(rootNode, nodeCallback, useIdIfEmptyName);
-    }
+  function getFormValues(rootNode, nodeCallback, useIdIfEmptyName)
+  {
+    var result = extractNodeValues(rootNode, nodeCallback, useIdIfEmptyName);
+    return result.length > 0 ? result : getSubFormValues(rootNode, nodeCallback, useIdIfEmptyName);
+  }
 
-    function getSubFormValues(rootNode, nodeCallback, useIdIfEmptyName)
+  function getSubFormValues(rootNode, nodeCallback, useIdIfEmptyName)
 	{
 		var result = [],
 			currentNode = rootNode.firstChild;
@@ -245,28 +247,28 @@
 		return result;
 	}
 
-    function extractNodeValues(node, nodeCallback, useIdIfEmptyName) {
-        var callbackResult, fieldValue, result, fieldName = getFieldName(node, useIdIfEmptyName);
+  function extractNodeValues(node, nodeCallback, useIdIfEmptyName) {
+    var callbackResult, fieldValue, result, fieldName = getFieldName(node, useIdIfEmptyName);
 
-        callbackResult = nodeCallback && nodeCallback(node);
+    callbackResult = nodeCallback && nodeCallback(node);
 
-        if (callbackResult && callbackResult.name) {
-            result = [callbackResult];
-        }
-        else if (fieldName != '' && node.nodeName.match(/INPUT|TEXTAREA/i)) {
-            fieldValue = getFieldValue(node);
-			result = [ { name: fieldName, value: fieldValue} ];
-        }
-        else if (fieldName != '' && node.nodeName.match(/SELECT/i)) {
-	        fieldValue = getFieldValue(node);
-	        result = [ { name: fieldName.replace(/\[\]$/, ''), value: fieldValue } ];
-        }
-        else {
-            result = getSubFormValues(node, nodeCallback, useIdIfEmptyName);
-        }
-
-        return result;
+    if (callbackResult && callbackResult.name) {
+      result = [callbackResult];
     }
+    else if (fieldName != '' && node.nodeName.match(/INPUT|TEXTAREA/i)) {
+      fieldValue = getFieldValue(node);
+			result = [ { name: fieldName, value: fieldValue} ];
+    }
+    else if (fieldName != '' && node.nodeName.match(/SELECT/i)) {
+      fieldValue = getFieldValue(node);
+      result = [ { name: fieldName.replace(/\[\]$/, ''), value: fieldValue } ];
+    }
+    else {
+      result = getSubFormValues(node, nodeCallback, useIdIfEmptyName);
+    }
+
+    return result;
+  }
 
 	function getFieldName(node, useIdIfEmptyName)
 	{
@@ -285,30 +287,26 @@
 			case 'TEXTAREA':
 				switch (fieldNode.type.toLowerCase()) {
 					case 'radio':
-			if (fieldNode.checked && fieldNode.value === "false") return false;
+						if (fieldNode.checked && fieldNode.value === "false") return false;
 					case 'checkbox':
-                        if (fieldNode.checked && fieldNode.value === "true") return true;
-                        if (!fieldNode.checked && fieldNode.value === "true") return false;
-			if (fieldNode.checked) return fieldNode.value;
+            if (fieldNode.checked && fieldNode.value === "true") return true;
+            if (!fieldNode.checked && fieldNode.value === "true") return false;
+						if (fieldNode.checked) return fieldNode.value;
 						break;
-
 					case 'button':
 					case 'reset':
 					case 'submit':
 					case 'image':
 						return '';
 						break;
-
 					default:
 						return fieldNode.value;
 						break;
 				}
 				break;
-
 			case 'SELECT':
 				return getSelectedOptionValue(fieldNode);
 				break;
-
 			default:
 				break;
 		}
