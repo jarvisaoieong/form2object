@@ -1,0 +1,18 @@
+{
+  "name": "form2object",
+  "version": "0.1.0",
+  "main": [
+    "src/form2js.js",
+    "src/jquery.toObject.js"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.3"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

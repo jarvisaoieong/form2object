@@ -300,6 +300,11 @@
 						return '';
 						break;
 					default:
+						// support Placeholders.js plugin used in legacy browser
+						if (fieldNode.getAttribute("data-placeholder-active") &&
+              fieldNode.getAttribute("data-placeholder-value") == fieldNode.value) {
+              fieldNode.value = '';
+            };
 						return fieldNode.value;
 						break;
 				}
