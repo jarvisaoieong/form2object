@@ -1,13 +1,19 @@
-form2js
+form2object
 -------
 
 Convenient way to collect **structured** form data into JavaScript object.
-[Example](http://form2js.googlecode.com/hg/example/test.html).
-Because everything is better with jQuery, jQuery plugin added, check out jquery.toObject.js.
-If you have any questions/suggestions, find out something weird or illogical - feel free to post an issue.
 
-**Warning!** form2object.js and form2object function renamed to form2js.js and form2js respectively.
-Old names are in v1.0 tag.
+Origin
+------
+
+This Object is based on maxatwork's [form2js](https://github.com/maxatwork/form2js)
+
+The main difference:
+
+- support Placeholders.js work in legacy browser
+- refactor method parameters structure
+- bower support
+- change the `skipEmpty` settings default value to `false`
 
 
 Details
@@ -25,8 +31,17 @@ Usage
 =====
 
 ``` javascript
-form2js(rootNode, delimiter, skipEmpty, nodeCallback, useIdIfEmptyName)
+form2js(rootNode, options)
 ```
+
+### Parameters
+
+- {Element|String} rootNode
+- {Object} options
+    - {String} delimiter
+    - {Boolean} skipEmpty
+    - {Function} nodeCallback
+    - {Boolean} useIdIfEmptyName
 
 Values of all inputs under the _rootNode_ will be collected into one object.
 skipping empty inputs if _skipEmpty_ not false.
