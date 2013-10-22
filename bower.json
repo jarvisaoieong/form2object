@@ -1,6 +1,6 @@
 {
   "name": "form2object",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": [
     "src/form2js.js",
     "src/jquery.toObject.js"
